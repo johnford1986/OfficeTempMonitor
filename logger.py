@@ -1,10 +1,10 @@
-import time
-
 from sensor import get_sensor_data
 from database import save_reading
 
 
 def log_once():
+    """Read the sensor once and save the reading."""
+
     data = get_sensor_data()
 
     temperature_c = data["va_temperature"] / 10
@@ -26,8 +26,7 @@ def log_once():
     )
 
 
-print("Logger started...")
-
-while True:
+if __name__ == "__main__":
+    print("Logger started...")
     log_once()
-    time.sleep(60)      # We'll change this to 60 later
+    print("Logger finished successfully.")
