@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Office Environment Monitor</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body class="bg-dark text-light">
+
+<div class="container py-5">
+
+    <h1 class="text-center mb-5">
+        🌡 Office Environment Monitor
+    </h1>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+
+            <div class="card bg-primary shadow-lg">
+
+                <div class="card-body text-center">
+
+                    <h6>Temperature</h6>
+
+                    <h1 class="display-2">
+
+                        {{ temperature }}°
+
+                    </h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-success shadow-lg">
+
+                <div class="card-body text-center">
+
+                    <h6>Humidity</h6>
+
+                    <h1 class="display-3">
+
+                        {{ humidity }}%
+
+                    </h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card bg-warning text-dark shadow-lg">
+
+                <div class="card-body text-center">
+
+                    <h6>Battery</h6>
+
+                    <h2>
+
+                        🔋 {{ battery }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card bg-secondary mt-4 shadow">
+
+        <div class="card-body text-center">
+
+            Last Updated
+
+            <br><br>
+
+            <strong>
+
+                {{ timestamp }}
+
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+<div class="container mt-5">
+
+    <div class="card bg-secondary shadow">
+
+        <div class="card-body">
+
+            <h3 class="text-center mb-4">
+
+                Temperature History
+
+            </h3>
+
+            <div style="height:400px;">
+                <canvas id="tempChart"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+let tempChart;
+
+async function loadChart() {
+
+    const response = await fetch("/api/history");
+    const data = await response.json();
+
+    const labels = data.map(r => r.timestamp.substring(11,19));
+    const temps = data.map(r => r.temperature);
+
+    const ctx = document.getElementById("tempChart").getContext("2d");
+
+    tempChart = new Chart(ctx, {
+
+        type: "line",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [{
+
+                label: "Office Temperature",
+
+                data: temps,
+
+                borderColor: "#00d4ff",
+
+                backgroundColor: "rgba(0,212,255,.15)",
+
+                fill: true,
+
+                borderWidth: 4,
+
+                pointRadius: 2,
+
+                pointHoverRadius: 6,
+
+                tension: .35
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    labels: {
+
+                        color: "white",
+
+                        font: {
+
+                            size: 16
+
+                        }
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    ticks: {
+
+                        color: "white"
+
+                    },
+
+                    grid: {
+
+                        color: "#444"
+
+                    }
+
+                },
+
+                y: {
+
+                    ticks: {
+
+                        color: "white"
+
+                    },
+
+                    grid: {
+
+                        color: "#444"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+loadChart();
+
+</script>
+</body>
+
+</html>
