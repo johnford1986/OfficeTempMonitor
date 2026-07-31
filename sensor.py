@@ -1,19 +1,20 @@
-print("Starting sensor.py")
+print("1 - sensor.py started")
 
 from dotenv import load_dotenv
 
-print("About to import Tuya connector...")
+print("2 - dotenv imported")
 
 from tuya_connector import TuyaOpenAPI
 
-print("Tuya connector imported!")
+print("3 - tuya_connector imported")
 
 import os
 
-print("Loading environment...")
+print("4 - os imported")
 
-# Load environment variables
 load_dotenv()
+
+print("5 - dotenv loaded")
 
 ACCESS_ID = os.getenv("TUYA_ACCESS_ID")
 ACCESS_SECRET = os.getenv("TUYA_ACCESS_SECRET")
