@@ -1,7 +1,16 @@
+print("Starting sensor.py")
+
 from dotenv import load_dotenv
+
+print("About to import Tuya connector...")
+
 from tuya_connector import TuyaOpenAPI
-print("Loading Tuya connector...")
+
+print("Tuya connector imported!")
+
 import os
+
+print("Loading environment...")
 
 # Load environment variables
 load_dotenv()
