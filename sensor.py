@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from tuya_connector import TuyaOpenAPI
+print("Loading Tuya connector...")
 import os
 
 # Load environment variables
@@ -12,6 +13,7 @@ DEVICE_ID = os.getenv("TUYA_DEVICE_ID")
 
 
 def get_sensor_data():
+    print("Connecting to Tuya...")
     """Retrieve the latest data from the Tuya temperature sensor."""
 
     openapi = TuyaOpenAPI(
