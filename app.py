@@ -1,8 +1,15 @@
 from flask import Flask, render_template, jsonify
-from database import get_latest_reading, get_history
+from dotenv import load_dotenv
+from database import initialize_database, get_latest_reading, get_history
+
+load_dotenv()  # Load environment variables from .env file
+
+import os
+print(os.getenv("DATABASE_URL"))
 
 app = Flask(__name__)
 
+initialize_database()
 
 @app.route("/")
 def home():

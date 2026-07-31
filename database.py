@@ -1,19 +1,22 @@
-import sqlite3
+import os
+import psycopg
+from psycopg.rows import dict_row
 
-DATABASE = "office_monitor.db"
+def get_connection():
+    database_url = os.getenv("DATABASE_URL")
+    return psycopg.connect(database_url, row_factory=dict_row)
 
 
 def initialize_database():
+    """Create the database table if it doesn't exist."""
 
-    """Create the database and table if they don't already exist."""
-
-    conn = sqlite3.connect(DATABASE)
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS readings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            id SERIAL PRIMARY KEY,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             temperature REAL,
             humidity INTEGER,
             battery TEXT
@@ -22,28 +25,28 @@ def initialize_database():
 
     conn.commit()
     conn.close()
-    
-def save_reading(temperature, humidity, battery):
-    """Save a sensor reading to the database."""
 
-    conn = sqlite3.connect(DATABASE)
+
+def save_reading(temperature, humidity, battery):
+    """Save a sensor reading."""
+
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
         INSERT INTO readings
         (temperature, humidity, battery)
-        VALUES (?, ?, ?)
+        VALUES (%s, %s, %s)
     """, (temperature, humidity, battery))
 
     conn.commit()
     conn.close()
-    
+
+
 def get_latest_reading():
-    """Return the most recent sensor reading."""
+    """Return the newest reading."""
 
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -59,12 +62,11 @@ def get_latest_reading():
 
     return row
 
+
 def get_history(limit=100):
-    """Return the most recent readings."""
+    """Return recent readings."""
 
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -74,7 +76,7 @@ def get_history(limit=100):
             humidity
         FROM readings
         ORDER BY timestamp DESC
-        LIMIT ?
+        LIMIT %s
     """, (limit,))
 
     rows = cursor.fetchall()
