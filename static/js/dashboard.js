@@ -4,6 +4,8 @@
 
 let chart;
 
+let isRefreshing = false;
+
 const dateElement = document.getElementById("date");
 const timeElement = document.getElementById("time");
 const nextUpdateElement = document.getElementById("nextUpdate");
@@ -324,6 +326,12 @@ loadHistory();
 
 async function refreshDashboard() {
 
+    if (isRefreshing) {
+        return;
+    }
+
+isRefreshing = true;
+
     const response = await fetch("/api/latest");
     const latest = await response.json();
 
@@ -346,6 +354,8 @@ async function refreshDashboard() {
     }
 
     await loadHistory();
+
+    isRefreshing = false;
 
 }
 
