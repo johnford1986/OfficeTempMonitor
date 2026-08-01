@@ -62,7 +62,7 @@
 
         <div class="col-md-4">
 
-            <div class="card bg-primary shadow-lg">
+            <div class="card shadow-lg" id="tempCard">
 
                 <div class="card-body text-center">
 
@@ -337,6 +337,8 @@ async function loadChart() {
 
 loadChart();
 
+updateTemperatureColor({{ temperature }});
+
 // --------------------
 // Refresh Temperature Chart
 // --------------------
@@ -391,9 +393,11 @@ async function refreshDashboard() {
 
         ts.innerHTML = data.timestamp.replace("\n","<br>");
 
+        updateTemperatureColor(data.temperature);
+
         lastUpdate = new Date(data.timestamp);
 
-updateCountdown();
+        updateCountdown();
 
     }
     catch(err){
@@ -405,6 +409,42 @@ updateCountdown();
 }
 
 setInterval(refreshDashboard,30000);
+
+function updateTemperatureColor(temp) {
+
+    const card = document.getElementById("tempCard");
+
+    card.classList.remove(
+        "bg-primary",
+        "bg-success",
+        "bg-warning",
+        "bg-danger",
+        "text-dark",
+        "text-white"
+    );
+
+    if (temp < 67) {
+
+        card.classList.add("bg-primary", "text-white");
+
+    }
+    else if (temp < 74) {
+
+        card.classList.add("bg-success", "text-white");
+
+    }
+    else if (temp <= 78) {
+
+        card.classList.add("bg-warning", "text-dark");
+
+    }
+    else {
+
+        card.classList.add("bg-danger", "text-white");
+
+    }
+
+}
 
 </script>
 
