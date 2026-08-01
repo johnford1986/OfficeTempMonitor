@@ -17,7 +17,7 @@ initialize_database()
 def format_timestamp(timestamp):
 
     if timestamp is None:
-        return ""
+        return "", ""
 
     if timestamp.tzinfo is None:
         timestamp = timestamp.replace(tzinfo=ZoneInfo("UTC"))
@@ -26,7 +26,8 @@ def format_timestamp(timestamp):
 
     date = timestamp.strftime("%A, %B %d, %Y")
     time = timestamp.strftime("%I:%M:%S %p").lstrip("0")
-    return f"{date}\n{time}"
+
+    return date, time
 
 
 @app.route("/")
@@ -35,14 +36,15 @@ def home():
     reading = get_latest_reading()
 
     if reading:
-        reading["timestamp"] = format_timestamp(reading["timestamp"])
+        reading["date"], reading["time"] = format_timestamp(reading["timestamp"])
 
     return render_template(
-        "index.html",
-        temperature=reading["temperature"],
-        humidity=reading["humidity"],
-        battery=reading["battery"],
-        timestamp=reading["timestamp"]
+    "index.html",
+    temperature=reading["temperature"],
+    humidity=reading["humidity"],
+    battery=reading["battery"],
+    date=reading["date"],
+    time=reading["time"]
     )
 
 

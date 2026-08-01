@@ -4,10 +4,12 @@
 
 let chart;
 
-const timestampElement = document.getElementById("timestamp");
+const dateElement = document.getElementById("date");
+const timeElement = document.getElementById("time");
 const nextUpdateElement = document.getElementById("nextUpdate");
 const tempCard = document.getElementById("tempCard");
 const humidityCard = document.getElementById("humidityCard");
+
 
 // ------------------------------
 // Countdown
@@ -15,7 +17,7 @@ const humidityCard = document.getElementById("humidityCard");
 
 function updateCountdown() {
 
-    const text = timestampElement.innerText.replace(/\n/g, " ");
+    const text = `${dateElement.innerText} ${timeElement.innerText}`;
 
     const lastUpdate = new Date(text);
 
