@@ -34,8 +34,10 @@ function updateCountdown() {
 
     if (diff <= 0) {
 
-        nextUpdateElement.innerHTML = "Updating...";
-        return;
+    nextUpdateElement.innerHTML = "Refreshing data...";
+
+    refreshDashboard();
+    return;
 
     }
 
@@ -47,7 +49,7 @@ function updateCountdown() {
 
 }
 
-setInterval(updateCountdown, 1000);
+setInterval(updateCountdown, 500);
 
 updateCountdown();
 
@@ -320,7 +322,24 @@ async function loadHistory() {
 
 loadHistory();
 
-setInterval(async () => {
+async function refreshDashboard() {
+
+    const response = await fetch("/api/latest");
+    const latest = await response.json();
+
+    document.getElementById("date").innerText = latest.date;
+    document.getElementById("time").innerText = latest.time;
+
+    updateCountdown();
+
+    document.querySelector("#tempCard .value").innerHTML =
+    `${latest.temperature}°`;
+
+    document.querySelector("#humidityCard .value").innerHTML =
+    `${latest.humidity}%`;
+
+    document.querySelector("#batteryCard .value").innerHTML =
+    `🔋 ${latest.battery}`;
 
     if (chart) {
         chart.dispose();
@@ -328,7 +347,8 @@ setInterval(async () => {
 
     await loadHistory();
 
-}, 30000);
+}
+
 
 window.addEventListener("resize", () => {
 

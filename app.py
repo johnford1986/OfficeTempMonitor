@@ -54,7 +54,13 @@ def latest():
     reading = get_latest_reading()
 
     if reading:
-        reading["timestamp"] = format_timestamp(reading["timestamp"])
+
+        date, time = format_timestamp(reading["timestamp"])
+
+        reading["date"] = date
+        reading["time"] = time
+
+        del reading["timestamp"]
 
     return jsonify(reading)
 
