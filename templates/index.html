@@ -428,12 +428,12 @@ function updateTemperatureColor(temp) {
         card.classList.add("bg-primary", "text-white");
 
     }
-    else if (temp < 74) {
+    else if (temp <= 74) {
 
         card.classList.add("bg-success", "text-white");
 
     }
-    else if (temp <= 78) {
+    else if (temp < 78) {
 
         card.classList.add("bg-warning", "text-dark");
 
