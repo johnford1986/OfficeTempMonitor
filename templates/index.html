@@ -82,7 +82,7 @@
 
         <div class="col-md-4">
 
-            <div class="card bg-success shadow-lg">
+            <div class="card shadow-lg" id="humidityCard">
 
                 <div class="card-body text-center">
 
@@ -339,6 +339,44 @@ loadChart();
 
 updateTemperatureColor({{ temperature }});
 
+updateHumidityColor({{ humidity }});
+
+function updateHumidityColor(humidity) {
+
+    const card = document.getElementById("humidityCard");
+
+    card.classList.remove(
+        "bg-primary",
+        "bg-success",
+        "bg-warning",
+        "bg-danger",
+        "text-dark",
+        "text-white"
+    );
+
+    if (humidity < 20) {
+
+        card.classList.add("bg-primary", "text-white");
+
+    }
+    else if (humidity <= 40) {
+
+        card.classList.add("bg-success", "text-white");
+
+    }
+    else if (humidity < 60) {
+
+        card.classList.add("bg-warning", "text-dark");
+
+    }
+    else {
+
+        card.classList.add("bg-danger", "text-white");
+
+    }
+
+}
+
 // --------------------
 // Refresh Temperature Chart
 // --------------------
@@ -394,6 +432,7 @@ async function refreshDashboard() {
         ts.innerHTML = data.timestamp.replace("\n","<br>");
 
         updateTemperatureColor(data.temperature);
+        updateHumidityColor(data.humidity);
 
         lastUpdate = new Date(data.timestamp);
 
