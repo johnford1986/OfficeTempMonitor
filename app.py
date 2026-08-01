@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 from dotenv import load_dotenv
 from database import initialize_database, get_latest_reading, get_history
-from sensor import get_sensor_data
+from logger import log_once
 from zoneinfo import ZoneInfo
 import os
 
@@ -86,8 +86,28 @@ def update():
     if token != os.getenv("UPDATE_TOKEN"):
         return jsonify({"status": "unauthorized"}), 401
 
-    # We'll add the sensor logging here next.
-    return jsonify({"status": "authorized"})
+    try:
+
+        log_once()
+
+        reading = get_latest_reading()
+
+        reading["timestamp"] = format_timestamp(reading["timestamp"])
+
+        return jsonify({
+            "status": "success",
+            "temperature": reading["temperature"],
+            "humidity": reading["humidity"],
+            "battery": reading["battery"],
+            "timestamp": reading["timestamp"]
+        })
+
+    except Exception as e:
+
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
 
 
 if __name__ == "__main__":
