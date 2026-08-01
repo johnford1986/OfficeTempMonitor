@@ -63,7 +63,28 @@ def get_latest_reading():
     return row
 
 
-def get_history(limit=100):
+def get_history():
+    """Return the last 72 hours of readings."""
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            timestamp,
+            temperature,
+            humidity
+        FROM readings
+        WHERE timestamp >= NOW() - INTERVAL '72 hours'
+        ORDER BY timestamp ASC
+    """)
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return rows
+
     """Return recent readings."""
 
     conn = get_connection()
