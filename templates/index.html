@@ -33,6 +33,12 @@
             font-weight:600;
         }
 
+        .next-update{
+            font-size:1.15rem;
+            margin-top:18px;
+            color:#d9d9d9;
+        }
+
         h1{
             font-weight:300;
         }
@@ -128,6 +134,13 @@
                 {{ timestamp }}
             </div>
 
+            <div class="next-update">
+                Next Update:
+                <strong id="nextUpdate">
+                    Calculating...
+                </strong>
+            </div>
+
         </div>
 
     </div>
@@ -160,25 +173,69 @@
 
 <script>
 
-// Format timestamp nicely
+// --------------------
+// Format Last Updated
+// --------------------
+
 const ts = document.getElementById("timestamp");
+
+let lastUpdate = null;
 
 try{
 
-    const d = new Date(ts.innerText);
+    lastUpdate = new Date(ts.innerText);
 
     ts.innerHTML =
-        d.toLocaleDateString(undefined,{
+        lastUpdate.toLocaleDateString(undefined,{
             weekday:'long',
             year:'numeric',
             month:'long',
             day:'numeric'
         }) +
         "<br>" +
-        d.toLocaleTimeString();
+        lastUpdate.toLocaleTimeString();
 
 }
 catch(e){}
+
+// --------------------
+// Next Update Countdown
+// --------------------
+
+function updateCountdown(){
+
+    if(!lastUpdate) return;
+
+    const next = new Date(lastUpdate.getTime() + (5 * 60 * 1000));
+
+    const now = new Date();
+
+    let diff = next - now;
+
+    if(diff < 0){
+
+        document.getElementById("nextUpdate").innerHTML =
+            "Updating...";
+
+        return;
+    }
+
+    const minutes = Math.floor(diff / 60000);
+
+    const seconds = Math.floor((diff % 60000) / 1000);
+
+    document.getElementById("nextUpdate").innerHTML =
+        `${minutes}m ${seconds}s`;
+
+}
+
+updateCountdown();
+
+setInterval(updateCountdown,1000);
+
+// --------------------
+// Temperature Chart
+// --------------------
 
 let tempChart;
 
@@ -249,9 +306,7 @@ async function loadChart() {
                         color:"white",
 
                         font:{
-
                             size:16
-
                         }
 
                     }
@@ -263,35 +318,13 @@ async function loadChart() {
             scales:{
 
                 x:{
-
-                    ticks:{
-
-                        color:"white"
-
-                    },
-
-                    grid:{
-
-                        color:"#555"
-
-                    }
-
+                    ticks:{ color:"white" },
+                    grid:{ color:"#555" }
                 },
 
                 y:{
-
-                    ticks:{
-
-                        color:"white"
-
-                    },
-
-                    grid:{
-
-                        color:"#555"
-
-                    }
-
+                    ticks:{ color:"white" },
+                    grid:{ color:"#555" }
                 }
 
             }
