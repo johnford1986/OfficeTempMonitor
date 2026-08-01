@@ -1,13 +1,11 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from dotenv import load_dotenv
 from database import initialize_database, get_latest_reading, get_history
+from sensor import get_sensor_data
 from zoneinfo import ZoneInfo
 import os
 
-# Load environment variables
 load_dotenv()
-
-print(os.getenv("DATABASE_URL"))
 
 app = Flask(__name__)
 
@@ -15,18 +13,13 @@ initialize_database()
 
 
 def format_timestamp(timestamp):
-    """
-    Convert UTC timestamp from the database to Central Time.
-    """
 
     if timestamp is None:
         return ""
 
-    # If the timestamp has no timezone info, assume UTC
     if timestamp.tzinfo is None:
         timestamp = timestamp.replace(tzinfo=ZoneInfo("UTC"))
 
-    # Convert to Central Time
     timestamp = timestamp.astimezone(ZoneInfo("America/Chicago"))
 
     return timestamp.strftime("%A, %B %d, %Y\n%-I:%M:%S %p")
@@ -83,6 +76,18 @@ def history():
         })
 
     return jsonify(history)
+
+
+@app.route("/update")
+def update():
+
+    token = request.args.get("token")
+
+    if token != os.getenv("UPDATE_TOKEN"):
+        return jsonify({"status": "unauthorized"}), 401
+
+    # We'll add the sensor logging here next.
+    return jsonify({"status": "authorized"})
 
 
 if __name__ == "__main__":
