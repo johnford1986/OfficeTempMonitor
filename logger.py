@@ -27,6 +27,9 @@ def log_once():
 
 
 if __name__ == "__main__":
+
     print("Logger started...")
+
     log_once()
+
     print("Logger finished successfully.")

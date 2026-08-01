@@ -1,3 +1,5 @@
+from datetime import date, time
+
 from flask import Flask, render_template, jsonify, request
 from dotenv import load_dotenv
 from database import initialize_database, get_latest_reading, get_history
@@ -22,7 +24,9 @@ def format_timestamp(timestamp):
 
     timestamp = timestamp.astimezone(ZoneInfo("America/Chicago"))
 
-    return timestamp.strftime("%A, %B %d, %Y\n%-I:%M:%S %p")
+    date = timestamp.strftime("%A, %B %d, %Y")
+    time = timestamp.strftime("%I:%M:%S %p").lstrip("0")
+    return f"{date}\n{time}"
 
 
 @app.route("/")
