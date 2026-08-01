@@ -25,7 +25,7 @@ def format_timestamp(timestamp):
     timestamp = timestamp.astimezone(ZoneInfo("America/Chicago"))
 
     date = timestamp.strftime("%A, %B %d, %Y")
-    time = timestamp.strftime("%I:%M:%S %p").lstrip("0")
+    time = timestamp.strftime("%I:%M %p").lstrip("0")
 
     return date, time
 
