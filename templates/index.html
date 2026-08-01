@@ -46,7 +46,7 @@
     </style>
 
     <!-- Refresh page every 30 seconds -->
-    <meta http-equiv="refresh" content="30">
+
 
 </head>
 
@@ -336,6 +336,75 @@ async function loadChart() {
 }
 
 loadChart();
+
+// --------------------
+// Refresh Temperature Chart
+// --------------------
+
+async function refreshChart() {
+
+    const response = await fetch("/api/history");
+    const data = await response.json();
+
+    tempChart.data.labels = data.map(r => {
+
+        const d = new Date(r.timestamp);
+
+        return d.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+    });
+
+    tempChart.data.datasets[0].data =
+        data.map(r => r.temperature);
+
+    tempChart.update();
+
+}
+
+setInterval(refreshChart, 30000);
+
+// --------------------
+// Live Dashboard Update
+// --------------------
+
+async function refreshDashboard() {
+
+    try {
+
+        const response = await fetch("/api/latest");
+
+        const data = await response.json();
+
+        document.querySelector(".bg-primary .value").innerHTML =
+            data.temperature + "°";
+
+        document.querySelector(".bg-success .value").innerHTML =
+            data.humidity + "%";
+
+        document.querySelector(".bg-warning h1").innerHTML =
+            "🔋 " + data.battery;
+
+        const ts = document.getElementById("timestamp");
+
+        ts.innerHTML = data.timestamp.replace("\n","<br>");
+
+        lastUpdate = new Date(data.timestamp);
+
+updateCountdown();
+
+    }
+    catch(err){
+
+        console.log(err);
+
+    }
+
+}
+
+setInterval(refreshDashboard,30000);
 
 </script>
 
