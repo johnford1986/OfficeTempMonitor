@@ -3,8 +3,7 @@
 // ==============================
 
 let chart;
-
-let isRefreshing = false;
+let lastUpdateTime = null;
 
 const dateElement = document.getElementById("date");
 const timeElement = document.getElementById("time");
@@ -12,6 +11,7 @@ const nextUpdateElement = document.getElementById("nextUpdate");
 const tempCard = document.getElementById("tempCard");
 const humidityCard = document.getElementById("humidityCard");
 
+lastUpdateTime = new Date(`${dateElement.innerText} ${timeElement.innerText}`);
 
 // ------------------------------
 // Countdown
@@ -19,41 +19,33 @@ const humidityCard = document.getElementById("humidityCard");
 
 function updateCountdown() {
 
-    const text = `${dateElement.innerText} ${timeElement.innerText}`;
-
-    const lastUpdate = new Date(text);
-
-    if (isNaN(lastUpdate)) {
-
+    if (!lastUpdateTime) {
         nextUpdateElement.innerHTML = "--";
         return;
-
     }
 
-    const nextUpdate = new Date(lastUpdate.getTime() + (5 * 60 * 1000));
-
+    const nextUpdate = new Date(lastUpdateTime.getTime() + 5 * 60 * 1000);
     const diff = nextUpdate - new Date();
 
     if (diff <= 0) {
-
-    nextUpdateElement.innerHTML = "Refreshing data...";
-
-    refreshDashboard();
-    return;
-
+        nextUpdateElement.innerHTML = "Checking for new reading...";
+        return;
     }
 
     const minutes = Math.floor(diff / 60000);
     const seconds = Math.floor((diff % 60000) / 1000);
 
-    nextUpdateElement.innerHTML =
-        `${minutes}m ${seconds}s`;
-
+    nextUpdateElement.innerHTML = `${minutes}m ${seconds}s`;
 }
 
-setInterval(updateCountdown, 500);
-
+setInterval(updateCountdown, 1000);
 updateCountdown();
+
+// ------------------------------
+// Check for new data every 5 seconds
+// ------------------------------
+
+setInterval(refreshDashboard, 5000);
 
 function updateTemperatureColor(temp) {
 
@@ -326,37 +318,37 @@ loadHistory();
 
 async function refreshDashboard() {
 
-    if (isRefreshing) {
+    const response = await fetch("/api/latest");
+    const latest = await response.json();
+
+    const newTime = new Date(`${latest.date} ${latest.time}`);
+
+    // Nothing new? Just leave.
+    if (lastUpdateTime &&
+        newTime.getTime() === lastUpdateTime.getTime()) {
         return;
     }
 
-isRefreshing = true;
-
-    const response = await fetch("/api/latest");
-    const latest = await response.json();
+    // New reading!
+    lastUpdateTime = newTime;
 
     document.getElementById("date").innerText = latest.date;
     document.getElementById("time").innerText = latest.time;
 
-    updateCountdown();
-
     document.querySelector("#tempCard .value").innerHTML =
-    `${latest.temperature}°`;
+        `${latest.temperature}°`;
 
     document.querySelector("#humidityCard .value").innerHTML =
-    `${latest.humidity}%`;
+        `${latest.humidity}%`;
 
     document.querySelector("#batteryCard .value").innerHTML =
-    `🔋 ${latest.battery}`;
+        `🔋 ${latest.battery}`;
 
     if (chart) {
         chart.dispose();
     }
 
     await loadHistory();
-
-    isRefreshing = false;
-
 }
 
 
