@@ -301,7 +301,6 @@ async function loadHistory() {
             },
 
             {
-
                 name: "Humidity",
 
                 type: "line",
@@ -310,11 +309,18 @@ async function loadHistory() {
 
                 showSymbol: false,
 
-                yAxisIndex: 1,
+                lineStyle: {
+                    color: "#ffdf00",
+                    width: 3
+                },
+
+                itemStyle: {
+                    color: "#ffdf00"
+                },
 
                 data: humidity
 
-            }
+            },
 
         ]
 
