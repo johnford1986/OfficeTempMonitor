@@ -318,6 +318,8 @@ async function loadHistory() {
                     color: "#ffdf00"
                 },
 
+                yAxisIndex: 1,
+
                 data: humidity
 
             },
