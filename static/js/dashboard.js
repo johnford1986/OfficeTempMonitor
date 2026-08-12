@@ -279,7 +279,6 @@ async function loadHistory() {
         series: [
 
             {
-
                 name: "Temperature",
 
                 type: "line",
@@ -287,6 +286,15 @@ async function loadHistory() {
                 smooth: true,
 
                 showSymbol: false,
+
+                lineStyle: {
+                    color: "#ff3b00",
+                    width: 3
+                },
+
+                itemStyle: {
+                    color: "#ff3b00"
+                },
 
                 data: temperature
 
