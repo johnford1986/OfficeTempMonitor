@@ -45,7 +45,7 @@ updateCountdown();
 // Check for new data every 5 seconds
 // ------------------------------
 
-setInterval(refreshDashboard, 5000);
+setInterval(refreshDashboard, 300000);
 
 function updateTemperatureColor(temp) {
 
