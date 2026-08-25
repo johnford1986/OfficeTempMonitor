@@ -24,7 +24,7 @@ function updateCountdown() {
         return;
     }
 
-    const nextUpdate = new Date(lastUpdateTime.getTime() + 5 * 60 * 1000);
+    const nextUpdate = new Date(lastUpdateTime.getTime() + 15 * 60 * 1000);
     const diff = nextUpdate - new Date();
 
     if (diff <= 0) {
@@ -45,7 +45,7 @@ updateCountdown();
 // Check for new data every 5 seconds
 // ------------------------------
 
-setInterval(refreshDashboard, 300000);
+setInterval(refreshDashboard, 900000);
 
 function updateTemperatureColor(temp) {
 
