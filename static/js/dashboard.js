@@ -24,7 +24,7 @@ function updateCountdown() {
         return;
     }
 
-    const nextUpdate = new Date(lastUpdateTime.getTime() + 15 * 60 * 1000);
+    const nextUpdate = new Date(lastUpdateTime.getTime() + 60 * 60 * 1000);
     const diff = nextUpdate - new Date();
 
     if (diff <= 0) {
